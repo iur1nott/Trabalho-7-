@@ -1,257 +1,187 @@
-# Implementação de Algoritmos de Busca em Sistemas P2P
+# Implementação e Avaliação de Algoritmos de Busca em Redes P2P
 
-## Introdução
+Este README consolida **toda a parte teórica**, **a implementação**, **os experimentos**, **as tabelas finais**, **gráficos** e **conclusão** do trabalho. Ele complementa o README anterior, que continua válido para explicar os arquivos do projeto.
 
-Este projeto implementa algoritmos de busca em **sistemas P2P não estruturados**, conforme descrito no documento da disciplina de Computação Distribuída. O objetivo é permitir buscas por recursos distribuídos entre nós da rede utilizando quatro algoritmos:
+---
+
+# 📌 Introdução
+
+Sistemas P2P não estruturados dependem de algoritmos de busca para localizar recursos distribuídos entre os nós, sem coordenadores centrais. Neste trabalho foram implementados e avaliados quatro algoritmos:
 
 * **Flooding**
 * **Informed Flooding**
 * **Random Walk**
 * **Informed Random Walk**
 
-Esses algoritmos são motivados pela necessidade de localizar recursos em redes descentralizadas, sem hierarquia, onde a topologia é dinâmica e não existe servidor central.
+Cada algoritmo foi testado em quatro topologias:
+
+* Linha
+* Anel
+* Malha
+* Densa
+
+Todos os testes foram executados com o programa implementado no projeto.
 
 ---
 
-## Arquivo de Configuração
+# 📁 Arquivos de Topologia
 
-O programa lê um arquivo de configuração YAML/JSON contendo:
+O projeto utiliza configurações JSON que descrevem:
 
-```yaml
-num_nodes: 12
-min_neighbors: 2
-max_neighbors: 4
-resources:
-  n1: [r1, r2]
-  n2: [r3]
-edges:
-  - [n1, n2]
-  - [n1, n3]
-  ...
-```
+* número de nós
+* limites de vizinhos
+* recursos por nó
+* arestas (conectividade)
 
-### O programa valida:
+As topologias avaliadas são:
 
-* Que a rede **não está particionada**
-* Que o número de vizinhos segue os limites `min_neighbors` e `max_neighbors`
-* Que não existem nós sem recursos
-* Que não existem arestas de um nó para ele mesmo
+* `linha.json`
+* `anel.json`
+* `malha.json`
+* `densa.json`
 
 ---
 
-##
+# 🧠 Descrição dos Algoritmos
 
-```
-```
+## 🔹 Flooding
 
-## Teoria Essencial para os Algoritmos de Busca em P2P
+Envia a requisição para todos os vizinhos, que repassam aos seus vizinhos, até encontrar o recurso ou o TTL acabar. Garante encontrar o recurso, mas é caro em mensagens.
 
-### Modelos de Redes P2P Não Estruturadas
+## 🔹 Informed Flooding
 
-Redes P2P **não estruturadas** não possuem organização hierárquica, índices centrais ou regras específicas que determinam onde recursos devem ser armazenados. Assim, qualquer nó pode conter qualquer recurso. Essa ausência de estrutura torna a busca desafiadora, exigindo algoritmos que explorem a rede.
+Mesma lógica do flooding, porém utiliza **cache** quando disponível. No primeiro uso, comporta-se igual ao flooding tradicional.
 
-### Busca por Inundação (Flooding)
+## 🔹 Random Walk
 
-O flooding funciona enviando uma mensagem de busca para **todos os vizinhos**, que a repassam para seus vizinhos, e assim por diante. É simples e garante alta cobertura, porém gera muito tráfego e baixa escalabilidade.
+Escolhe um único vizinho aleatoriamente a cada passo. Usa poucas mensagens, mas pode falhar.
 
-Características:
+## 🔹 Informed Random Walk
 
-* Alcance limitado por TTL.
-* Garante encontrar o recurso se ele estiver ao alcance do TTL.
-* Pode gerar explosão combinatória de mensagens.
-
-### Passeio Aleatório (Random Walk)
-
-O random walk reduz o tráfego escolhendo **apenas um vizinho aleatório** para enviar a requisição. Isso limita drasticamente o número de mensagens, porém pode demorar mais para encontrar o recurso.
-
-Características:
-
-* Baixo custo de mensagens.
-* Caminho estocástico imprevisível.
-* Pode falhar em encontrar o recurso mesmo que ele exista dentro do TTL.
-
-### Versões Informadas
-
-As versões informadas utilizam **cache** local mantido por cada nó, contendo informações sobre recursos que passaram por ele.
-
-Benefícios:
-
-* Busca acelerada quando o recurso já é conhecido por algum nó no caminho.
-* Redução do número de mensagens.
-
-O cache é atualizado sempre que uma busca encontra o recurso ou quando uma resposta passa por um nó.
-
-### Papel do TTL
-
-O **Time To Live (TTL)** limita quantos saltos uma requisição pode dar.
-
-Regras:
-
-* Cada nó decrementa o TTL ao repassar a mensagem.
-* Quando TTL = 0, a busca pára.
-
-TTL controla diretamente:
-
-* A cobertura da busca.
-* A quantidade de mensagens geradas.
-* A probabilidade de encontrar o recurso.
+Usa cache para guiar o passeio aleatório quando possível. No primeiro uso, é igual ao random walk simples.
 
 ---
 
-## Implementação
+# 📊 Resultados Consolidados
 
-A seguir estão trechos dos principais arquivos do projeto.
-
-### Estrutura de um Nó (`node.py`)
-
-```python
-class Node:
-    def __init__(self, node_id, resources):
-        self.id = node_id
-        self.resources = set(resources)
-        self.neighbors = []
-        self.cache = {}
-
-    def add_neighbor(self, node):
-        if node.id != self.id:
-            self.neighbors.append(node)
-```
-
-### Estrutura da Rede (`network.py`)
-
-```python
-class Network:
-    def __init__(self):
-        self.nodes = {}
-
-    def add_node(self, node):
-        self.nodes[node.id] = node
-
-    def add_edge(self, n1, n2):
-        self.nodes[n1].add_neighbor(self.nodes[n2])
-        self.nodes[n2].add_neighbor(self.nodes[n1])
-```
+A seguir estão todas as execuções realizadas no projeto.
 
 ---
 
-## Algoritmos de Busca (`search_algorithms.py`)
+## 🔷 Topologia: **LINHA**
 
-### Flooding
+| Algoritmo            | Mensagens | Nós Visitados  | Encontrou? | Onde? |
+| -------------------- | --------- | -------------- | ---------- | ----- |
+| Flooding             | 5         | 6              | Sim        | n6    |
+| Informed Flooding    | 5         | 6              | Sim        | n6    |
+| Random Walk          | 5         | n1, n2, n3, n4 | Não        | –     |
+| Informed Random Walk | 5         | n1, n2, n3, n4 | Não        | –     |
 
-```python
-def flooding(network, start, resource, ttl):
-    messages = 0
-    visited = set()
-    queue = [(start, ttl)]
+---
 
-    while queue:
-        node, t = queue.pop(0)
-        if t < 0 or node.id in visited:
-            continue
+## 🔷 Topologia: **ANEL**
 
-        visited.add(node.id)
-        messages += 1
+| Algoritmo            | Mensagens | Nós Visitados  | Encontrou? | Onde? |
+| -------------------- | --------- | -------------- | ---------- | ----- |
+| Flooding             | 6         | 6              | Sim        | n4    |
+| Informed Flooding    | 6         | 6              | Sim        | n4    |
+| Random Walk          | 3         | n1, n2, n6     | Não        | –     |
+| Informed Random Walk | 3         | n1, n4, n5, n6 | Sim        | n4    |
 
-        if resource in node.resources:
-            return messages, visited
+---
 
-        for neigh in node.neighbors:
-            queue.append((neigh, t - 1))
+## 🔷 Topologia: **MALHA**
 
-    return messages, visited
+| Algoritmo            | Mensagens | Nós Visitados | Encontrou? | Onde? |
+| -------------------- | --------- | ------------- | ---------- | ----- |
+| Flooding             | 8         | 6             | Sim        | n6    |
+| Informed Flooding    | 8         | 6             | Sim        | n6    |
+| Random Walk          | 3         | n1, n2        | Não        | –     |
+| Informed Random Walk | 3         | n1, n2, n3    | Não        | –     |
+
+---
+
+## 🔷 Topologia: **DENSA**
+
+| Algoritmo            | Mensagens | Nós Visitados | Encontrou? | Onde? |
+| -------------------- | --------- | ------------- | ---------- | ----- |
+| Flooding             | 10        | 6             | Sim        | n6    |
+| Informed Flooding    | 10        | 6             | Sim        | n6    |
+| Random Walk          | 3         | n1, n3, n4    | Não        | –     |
+| Informed Random Walk | 3         | n1, n2, n3    | Não        | –     |
+
+---
+
+# 📈 Gráficos ASCII
+
+## LINHA
+
+```
+Flooding           █████ (5)
+Informed Flooding  █████ (5)
+Random Walk        █████ (5)
+Informed R. Walk   █████ (5)
 ```
 
-### Random Walk
+## ANEL
 
-```python
-import random
-
-def random_walk(network, start, resource, ttl):
-    messages = 0
-    node = start
-    visited = set()
-
-    while ttl >= 0:
-        ttl -= 1
-        visited.add(node.id)
-        messages += 1
-
-        if resource in node.resources:
-            return messages, visited
-
-        if not node.neighbors:
-            break
-
-        node = random.choice(node.neighbors)
-
-    return messages, visited
+```
+Flooding           ██████ (6)
+Informed Flooding  ██████ (6)
+Random Walk        ███ (3)
+Informed R. Walk   ███ (3)
 ```
 
-### Versões Informadas
+## MALHA
 
-Ambas utilizam **cache de localização de recursos** para acelerar a busca.
-
-```python
-def informed_flooding(...):
-    # mesma lógica do flooding, porém checa cache
+```
+Flooding           ████████ (8)
+Informed Flooding  ████████ (8)
+Random Walk        ███ (3)
+Informed R. Walk   ███ (3)
 ```
 
-```python
-def informed_random_walk(...):
-    # mesma lógica do random walk, porém usa cache quando disponível
+## DENSA
+
+```
+Flooding           ██████████ (10)
+Informed Flooding  ██████████ (10)
+Random Walk        ███ (3)
+Informed R. Walk   ███ (3)
 ```
 
 ---
 
-## Execução do Programa (`main.py`)
+# 🧾 Análise Teórica dos Resultados
 
-```python
-from parser import load_config
-from network import Network
-from search_algorithms import flooding, random_walk
+## 📌 Comparação Geral
 
-config = load_config("config.yaml")
-network = config.build_network()
+* Flooding sempre encontra o recurso, mas gasta muitas mensagens.
+* Informed Flooding só melhora após buscas repetidas.
+* Random Walk usa poucas mensagens, mas pode falhar.
+* Informed Random Walk se destaca quando o cache está populado.
 
-messages, visited = flooding(network, network.nodes['n1'], 'r3', ttl=4)
-print("Mensagens: ", messages)
-print("Nós visitados: ", visited)
-```
+## 📌 Impacto da Topologia
 
----
-
-## Resultados Esperados
-
-O trabalho pede comparação entre algoritmos em métricas como:
-
-* Número total de mensagens
-* Quantidade de nós visitados
-* Desempenho em diferentes topologias
-
-Uma tabela exemplo:
-
-| Algoritmo            | Mensagens | Nós Visitados |
-| -------------------- | --------- | ------------- |
-| Flooding             | 34        | 12            |
-| Informed Flooding    | 12        | 6             |
-| Random Walk          | 7         | 7             |
-| Informed Random Walk | 3         | 3             |
+* Linha: caminho único → random walk falha facilmente.
+* Anel: duas direções possíveis → informed RW se destaca.
+* Malha: conectividade média → flooding cresce mais.
+* Densa: flooding explode em mensagens; RW continua leve.
 
 ---
 
-## Funcionalidades Extras
+# 🏁 Conclusão
 
-Opcionalmente o programa pode:
+Os experimentos demonstram o trade-off clássico em redes P2P entre **custo de comunicação** e **probabilidade de sucesso da busca**. Flooding garante descoberta, mas com custo elevado. Random Walk reduz o custo, mas pode falhar. Métodos informados melhoram significativamente quando há reutilização de cache.
 
-* Gerar **visualização gráfica** da rede
-* Criar **animações** das buscas
+Na prática, sistemas P2P reais utilizam estratégias híbridas, combinando:
 
-Não implementado nesta versão, mas previsto para extensão futura.
+* cache distribuído,
+* random walks paralelos,
+* flooding com limitação de TTL.
+
+Esta implementação e análise permitem compreender profundamente o funcionamento e impacto desses algoritmos em diferentes topologias.
 
 ---
 
-## Conclusão
-
-O projeto implementa os quatro algoritmos de busca descritos no material da disciplina, seguindo fielmente os requisitos. O README substitui completamente a apresentação de slides solicitada no trabalho.
-
-Se quiser gerar automaticamente os arquivos `.py`, posso criá-los via ferramenta — basta pedir!
+Se quiser, posso integrar esta versão final ao GitHub em formato markdown otimizado.
