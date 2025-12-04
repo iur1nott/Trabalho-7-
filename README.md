@@ -2,7 +2,7 @@
 
 # Implementação de Algoritmos de Busca em Sistemas P2P
 
-## 📌 Introdução
+## Introdução
 
 Este projeto implementa algoritmos de busca em **sistemas P2P não estruturados**, conforme descrito no documento da disciplina de Computação Distribuída. O objetivo é permitir buscas por recursos distribuídos entre nós da rede utilizando quatro algoritmos:
 
@@ -15,7 +15,7 @@ Esses algoritmos são motivados pela necessidade de localizar recursos em redes 
 
 ---
 
-## 📌 Arquivo de Configuração
+## Arquivo de Configuração
 
 O programa lê um arquivo de configuração YAML/JSON contendo:
 
@@ -39,19 +39,19 @@ edges:
 * Que não existem nós sem recursos
 * Que não existem arestas de um nó para ele mesmo
 
----
+
+
 
 
 ```
-```
 
-## 📌 Teoria Essencial para os Algoritmos de Busca em P2P
+##  Teoria Essencial para os Algoritmos de Busca em P2P
 
-### 🔹 Modelos de Redes P2P Não Estruturadas
+### Modelos de Redes P2P Não Estruturadas
 
 Redes P2P **não estruturadas** não possuem organização hierárquica, índices centrais ou regras específicas que determinam onde recursos devem ser armazenados. Assim, qualquer nó pode conter qualquer recurso. Essa ausência de estrutura torna a busca desafiadora, exigindo algoritmos que explorem a rede.
 
-### 🔹 Busca por Inundação (Flooding)
+### Busca por Inundação (Flooding)
 
 O flooding funciona enviando uma mensagem de busca para **todos os vizinhos**, que a repassam para seus vizinhos, e assim por diante. É simples e garante alta cobertura, porém gera muito tráfego e baixa escalabilidade.
 
@@ -61,7 +61,7 @@ Características:
 * Garante encontrar o recurso se ele estiver ao alcance do TTL.
 * Pode gerar explosão combinatória de mensagens.
 
-### 🔹 Passeio Aleatório (Random Walk)
+### Passeio Aleatório (Random Walk)
 
 O random walk reduz o tráfego escolhendo **apenas um vizinho aleatório** para enviar a requisição. Isso limita drasticamente o número de mensagens, porém pode demorar mais para encontrar o recurso.
 
@@ -71,7 +71,7 @@ Características:
 * Caminho estocástico imprevisível.
 * Pode falhar em encontrar o recurso mesmo que ele exista dentro do TTL.
 
-### 🔹 Versões Informadas
+### Versões Informadas
 
 As versões informadas utilizam **cache** local mantido por cada nó, contendo informações sobre recursos que passaram por ele.
 
@@ -82,7 +82,7 @@ Benefícios:
 
 O cache é atualizado sempre que uma busca encontra o recurso ou quando uma resposta passa por um nó.
 
-### 🔹 Papel do TTL
+### Papel do TTL
 
 O **Time To Live (TTL)** limita quantos saltos uma requisição pode dar.
 
@@ -99,11 +99,11 @@ TTL controla diretamente:
 
 ---
 
-## 📌 Implementação
+## Implementação
 
 A seguir estão trechos dos principais arquivos do projeto.
 
-### 📍 Estrutura de um Nó (`node.py`)
+### Estrutura de um Nó (`node.py`)
 
 ```python
 class Node:
@@ -118,7 +118,7 @@ class Node:
             self.neighbors.append(node)
 ```
 
-### 📍 Estrutura da Rede (`network.py`)
+### Estrutura da Rede (`network.py`)
 
 ```python
 class Network:
@@ -135,9 +135,9 @@ class Network:
 
 ---
 
-## 📌 Algoritmos de Busca (`search_algorithms.py`)
+## Algoritmos de Busca (`search_algorithms.py`)
 
-### 🔹 Flooding
+### Flooding
 
 ```python
 def flooding(network, start, resource, ttl):
@@ -162,7 +162,7 @@ def flooding(network, start, resource, ttl):
     return messages, visited
 ```
 
-### 🔹 Random Walk
+### Random Walk
 
 ```python
 import random
@@ -188,7 +188,7 @@ def random_walk(network, start, resource, ttl):
     return messages, visited
 ```
 
-### 🔹 Versões Informadas
+### Versões Informadas
 
 Ambas utilizam **cache de localização de recursos** para acelerar a busca.
 
@@ -204,7 +204,7 @@ def informed_random_walk(...):
 
 ---
 
-## 📌 Execução do Programa (`main.py`)
+## Execução do Programa (`main.py`)
 
 ```python
 from parser import load_config
@@ -221,7 +221,7 @@ print("Nós visitados: ", visited)
 
 ---
 
-## 📌 Resultados Esperados
+## Resultados Esperados
 
 O trabalho pede comparação entre algoritmos em métricas como:
 
@@ -240,7 +240,7 @@ Uma tabela exemplo:
 
 ---
 
-## 📌 Funcionalidades Extras
+## Funcionalidades Extras
 
 Opcionalmente o programa pode:
 
