@@ -1,5 +1,3 @@
-# Trabalho 7 
-
 # Implementação de Algoritmos de Busca em Sistemas P2P
 
 ## Introdução
@@ -39,13 +37,14 @@ edges:
 * Que não existem nós sem recursos
 * Que não existem arestas de um nó para ele mesmo
 
+---
 
-
-
+##
 
 ```
+```
 
-##  Teoria Essencial para os Algoritmos de Busca em P2P
+## Teoria Essencial para os Algoritmos de Busca em P2P
 
 ### Modelos de Redes P2P Não Estruturadas
 
@@ -251,7 +250,7 @@ Não implementado nesta versão, mas previsto para extensão futura.
 
 ---
 
-## 📌 Conclusão
+## Conclusão
 
 O projeto implementa os quatro algoritmos de busca descritos no material da disciplina, seguindo fielmente os requisitos. O README substitui completamente a apresentação de slides solicitada no trabalho.
 
