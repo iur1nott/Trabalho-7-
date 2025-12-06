@@ -1,7 +1,5 @@
 # Implementação e Avaliação de Algoritmos de Busca em Redes P2P
 
-Este README consolida **toda a parte teórica**, **a implementação**, **os experimentos**, **as tabelas finais**, **gráficos** e **conclusão** do trabalho. Ele complementa o README anterior, que continua válido para explicar os arquivos do projeto.
-
 ---
 
 # 📌 Introdução
