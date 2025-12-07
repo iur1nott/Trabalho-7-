@@ -2,7 +2,7 @@
 
 ---
 
-# 📌 Introdução
+# Introdução
 
 Sistemas P2P não estruturados dependem de algoritmos de busca para localizar recursos distribuídos entre os nós, sem coordenadores centrais. Neste trabalho foram implementados e avaliados quatro algoritmos:
 
@@ -22,7 +22,7 @@ Todos os testes foram executados com o programa implementado no projeto.
 
 ---
 
-# 📁 Arquivos de Topologia
+# Arquivos de Topologia
 
 O projeto utiliza configurações JSON que descrevem:
 
@@ -40,33 +40,33 @@ As topologias avaliadas são:
 
 ---
 
-# 🧠 Descrição dos Algoritmos
+# Descrição dos Algoritmos
 
-## 🔹 Flooding
+## Flooding
 
 Envia a requisição para todos os vizinhos, que repassam aos seus vizinhos, até encontrar o recurso ou o TTL acabar. Garante encontrar o recurso, mas é caro em mensagens.
 
-## 🔹 Informed Flooding
+## Informed Flooding
 
 Mesma lógica do flooding, porém utiliza **cache** quando disponível. No primeiro uso, comporta-se igual ao flooding tradicional.
 
-## 🔹 Random Walk
+## Random Walk
 
 Escolhe um único vizinho aleatoriamente a cada passo. Usa poucas mensagens, mas pode falhar.
 
-## 🔹 Informed Random Walk
+## Informed Random Walk
 
 Usa cache para guiar o passeio aleatório quando possível. No primeiro uso, é igual ao random walk simples.
 
 ---
 
-# 📊 Resultados Consolidados
+# Resultados Consolidados
 
 A seguir estão todas as execuções realizadas no projeto.
 
 ---
 
-## 🔷 Topologia: **LINHA**
+## Topologia: **LINHA**
 
 | Algoritmo            | Mensagens | Nós Visitados  | Encontrou? | Onde? |
 | -------------------- | --------- | -------------- | ---------- | ----- |
@@ -77,7 +77,7 @@ A seguir estão todas as execuções realizadas no projeto.
 
 ---
 
-## 🔷 Topologia: **ANEL**
+## Topologia: **ANEL**
 
 | Algoritmo            | Mensagens | Nós Visitados  | Encontrou? | Onde? |
 | -------------------- | --------- | -------------- | ---------- | ----- |
@@ -88,7 +88,7 @@ A seguir estão todas as execuções realizadas no projeto.
 
 ---
 
-## 🔷 Topologia: **MALHA**
+## Topologia: **MALHA**
 
 | Algoritmo            | Mensagens | Nós Visitados | Encontrou? | Onde? |
 | -------------------- | --------- | ------------- | ---------- | ----- |
@@ -99,7 +99,7 @@ A seguir estão todas as execuções realizadas no projeto.
 
 ---
 
-## 🔷 Topologia: **DENSA**
+## Topologia: **DENSA**
 
 | Algoritmo            | Mensagens | Nós Visitados | Encontrou? | Onde? |
 | -------------------- | --------- | ------------- | ---------- | ----- |
@@ -110,7 +110,7 @@ A seguir estão todas as execuções realizadas no projeto.
 
 ---
 
-# 📈 Gráficos ASCII
+# Gráficos ASCII
 
 ## LINHA
 
@@ -150,25 +150,25 @@ Informed R. Walk   ███ (3)
 
 ---
 
-# 🧾 Análise Teórica dos Resultados
+# Análise Teórica dos Resultados
 
-## 📌 Comparação geral
+## Comparação geral
 
 * Flooding sempre encontra o recurso, mas gasta muitas mensagens.
 * Informed Flooding só melhora após buscas repetidas.
 * Random Walk usa poucas mensagens, mas pode falhar.
 * Informed Random Walk se destaca quando o cache está populado.
 
-## 📌 Impacto da topologia
+## Impacto da topologia
 
 * Linha: caminho único → random walk falha facilmente.
 * Anel: duas direções possíveis → informed RW se destaca.
 * Malha: conectividade média → flooding cresce mais.
 * Densa: flooding explode em mensagens; RW continua leve.
 
-## 📌 Análise gráfica
+## Análise gráfica
 
-### 🔹 **Eficiência: taxa de sucesso por custo**
+### **Eficiência: taxa de sucesso por custo**
 
 <img width="4471" height="3543" alt="efficiency_comparison" src="https://github.com/user-attachments/assets/2150a82e-035e-4d2f-835a-e6833a4eaf62" />
 
@@ -182,7 +182,7 @@ Os gráficos de eficiência mostram como cada algoritmo performa em termos de **
 
 Esses gráficos reforçam o trade-off entre **confiabilidade (flooding)** e **eficiência (random walk)**.
 
-### 🔹 **Tempo de Execução vs TTL**
+### **Tempo de Execução vs TTL**
 
 <img width="4766" height="3542" alt="execution_time_analysis" src="https://github.com/user-attachments/assets/c1184bf1-c9af-4d16-bc6f-0492c59c611d" />
 
@@ -196,7 +196,7 @@ Os tempos de execução mostram como a complexidade prática de cada algoritmo c
 
 Esses resultados evidenciam que o **uso de cache reduz drasticamente a latência**, principalmente nos métodos informados.
 
-### 🔹 **Eficiência de Busca: Nós Visitados por Mensagem**
+### **Eficiência de Busca: Nós Visitados por Mensagem**
 
 <img width="4767" height="3542" alt="search_efficiency" src="https://github.com/user-attachments/assets/481a0258-32c5-46fc-bec5-a0d06559ec74" />
 
@@ -210,7 +210,7 @@ Os gráficos de nós visitados por mensagem detalham melhor o "custo interno" da
 
 Aqui fica evidente a diferença entre **baixo custo com baixa eficiência (RW)** e **baixo custo com alta eficiência (informed RW)**.
 
-### 🔹 **Comparação Geral de Mensagens por Topologia**
+### **Comparação Geral de Mensagens por Topologia**
 
 <img width="1600" height="960" alt="image" src="https://github.com/user-attachments/assets/0f0a7b6f-e29d-4f10-ab0c-abfb20bfbc51" />
 
@@ -226,7 +226,7 @@ Esse gráfico sintetiza bem o **trade-off central do trabalho: custo vs confiabi
 
 ---
 
-# 🏁 Conclusão
+# Conclusão
 
 Os experimentos demonstram o trade-off clássico em redes P2P entre **custo de comunicação** e **probabilidade de sucesso da busca**. Flooding garante descoberta, mas com custo elevado. Random Walk reduz o custo, mas pode falhar. Métodos informados melhoram significativamente quando há reutilização de cache.
 
