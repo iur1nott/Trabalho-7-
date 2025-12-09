@@ -4,17 +4,16 @@ import os
 from typing import Tuple, Dict, Any, List
 
 from network import Network
-from search_algorithms import ALGORITHMS
+from search_algorithms import ALGORITHMS, SearchResult
 
 
 # ---------------------------------------------------------------------------
-# Funções de carga de configuração (substituem o config_parser.py aqui dentro)
+# Funções de carga de configuração
 # ---------------------------------------------------------------------------
 
 def _load_yaml(path: str) -> Dict[str, Any]:
-    """Tenta carregar YAML usando PyYAML, se estiver disponível."""
     try:
-        import yaml  # type: ignore
+        import yaml
     except ImportError as exc:
         raise RuntimeError(
             "Para usar arquivos YAML, instale a dependência opcional 'pyyaml' (pip install pyyaml).\n"
@@ -31,31 +30,13 @@ def _load_json(path: str) -> Dict[str, Any]:
 
 
 def load_config(path: str) -> Tuple[Network, Dict[str, Any]]:
-    """Carrega o arquivo de configuração e constrói a Network.
-
-    Formato esperado (YAML ou JSON):
-
-    {
-      "num_nodes": 12,
-      "min_neighbors": 2,
-      "max_neighbors": 4,
-      "resources": {
-        "n1": ["r1", "r2"],
-        "n2": ["r3"]
-      },
-      "edges": [
-        ["n1", "n2"],
-        ["n1", "n3"]
-      ]
-    }
-    """
+    """Carrega o arquivo de configuração e constrói a Network."""
     ext = os.path.splitext(path)[1].lower()
     if ext in (".yaml", ".yml"):
         data = _load_yaml(path)
     elif ext == ".json":
         data = _load_json(path)
     else:
-        # tentativa simples: primeiro JSON, depois YAML
         try:
             data = _load_json(path)
         except Exception:
@@ -138,9 +119,18 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
-    print(">>> ENTROU NA MAIN <<<")  # DEBUG
+def _format_paths(paths: List[List[str]]) -> str:
+    """Formata a lista de caminhos para exibição amigável."""
+    if not paths:
+        return "Nenhum caminho percorrido"
+    
+    formatted = []
+    for i, path in enumerate(paths):
+        formatted.append(f"Caminho {i+1}: {' -> '.join(path)}")
+    return "\n".join(formatted)
 
+
+def main():
     args = parse_args()
 
     # Carrega rede a partir do arquivo de configuração
@@ -168,11 +158,16 @@ def main():
     print(f"Nó inicial          : {result.start_node}")
     print(f"Recurso buscado     : {result.resource_id}")
     print(f"Encontrado?         : {'sim' if result.found else 'não'}")
+    
     if result.found:
-        print(f"Encontrado no nó    : {result.found_at}")
+        print(f"Nós com recurso     : {', '.join(result.found_nodes)}")
+    
     print(f"Mensagens trocadas  : {result.messages}")
     print(f"Nós envolvidos      : {result.num_visited_nodes}")
     print(f"Nós visitados       : {sorted(result.visited_nodes)}")
+    
+    print("\nCaminhos percorridos:")
+    print(_format_paths(result.paths))
 
 
 if __name__ == "__main__":
@@ -181,5 +176,7 @@ if __name__ == "__main__":
     except Exception as e:
         print("\n[ERRO DURANTE A EXECUÇÃO]")
         print(e)
+        import traceback
+        traceback.print_exc()
     finally:
         input("\nPressione ENTER para sair...")
